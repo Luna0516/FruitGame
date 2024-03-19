@@ -9,7 +9,9 @@ public class LoadingObjects : MonoBehaviour
     private float waitTime = 0.01f;
 
     private WaitForSeconds wait;
-    
+
+    bool isLoading = false;
+
     int widthCubeCount;
     int heightCubeCount;
 
@@ -64,7 +66,17 @@ public class LoadingObjects : MonoBehaviour
         if (yCount == heightCubeCount)
         {
             yCount = 0;
-            StartCoroutine(ActiveLoadingLine(false));
+            isLoading = active;
+
+            if (isLoading)
+            {
+                SceneHandler.Inst.onLoadingSceneCover?.Invoke();
+                StartCoroutine(ActiveLoadingLine(false));
+            }
+            else
+            {
+                SceneHandler.Inst.onLoadingSceneUnCover?.Invoke();
+            }
         }
     }
 }

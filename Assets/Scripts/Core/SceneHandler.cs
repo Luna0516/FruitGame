@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneHandler : Singleton<SceneHandler>
 {
-    private string loadingSceneName = "LoadingScene";
+    private const string loadingSceneName = "GameLoadingScene";
 
     private string previousSceneName;
     public string PreviousSceneName
@@ -16,6 +16,7 @@ public class SceneHandler : Singleton<SceneHandler>
             if (previousSceneName != value)
             {
                 previousSceneName = value;
+                Debug.Log($"이전 씬 이름 : {previousSceneName}");
             }
         }
     }
@@ -29,6 +30,7 @@ public class SceneHandler : Singleton<SceneHandler>
             if (presentSceneName != value)
             {
                 presentSceneName = value;
+                Debug.Log($"현재 설정된 씬 이름 : {presentSceneName}");
             }
         }
     }
@@ -42,6 +44,7 @@ public class SceneHandler : Singleton<SceneHandler>
             if(nextSceneName != value)
             {
                 nextSceneName = value;
+                Debug.Log($"다음 씬 이름 : {nextSceneName}");
                 StartCoroutine(LoadScene());
             }
         }
@@ -50,19 +53,13 @@ public class SceneHandler : Singleton<SceneHandler>
     AsyncOperation async;
 
     public System.Action onLoadingSceneCover;
-
     public System.Action onLoadingSceneUnCover;
 
-    //protected override void OnPreInitialize()
-    //{
-    //    base.OnPreInitialize();
-
-    //    onLoadingSceneCover += StartNextSceneLoading;
-    //    onLoadingSceneUnCover += EndNextSceneLoading;
-    //}
-
-    private void Start()
+    protected override void OnAwake()
     {
+        onLoadingSceneCover += StartNextSceneLoading;
+        onLoadingSceneUnCover += EndNextSceneLoading;
+
         PresentSceneName = SceneManager.GetActiveScene().name;
     }
 
@@ -71,8 +68,6 @@ public class SceneHandler : Singleton<SceneHandler>
         PreviousSceneName = PresentSceneName;
         PresentSceneName = NextSceneName;
         nextSceneName = null;
-
-        //GameManager.Inst.Init();
 
         async.allowSceneActivation = true;
 
